@@ -270,6 +270,8 @@ class _PlantDetailsPageState extends State<PlantDetailsPage> {
             onPressed: () => Navigator.pop(context),
           ),
         ),
+
+  
         actions: [
           Container(
             margin: const EdgeInsets.all(8),

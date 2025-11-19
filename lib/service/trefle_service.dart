@@ -1,9 +1,3 @@
-
-
-
-// melhorar app bar e pagina de detalhes
-
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async'; 
