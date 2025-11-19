@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:apkinvertexto/service/trefle_service.dart';
 import 'package:apkinvertexto/view/plant_details_page.dart';
 
-
 class SearchPlantsPage extends StatefulWidget {
   const SearchPlantsPage({super.key});
 
@@ -13,7 +12,7 @@ class SearchPlantsPage extends StatefulWidget {
 class _SearchPlantsPageState extends State<SearchPlantsPage> {
   final _searchController = TextEditingController();
   final _apiService = TrefleService();
-  
+
   Future<Map<String, dynamic>>? _plantsFuture;
 
   @override //limpar a memoria//
@@ -24,10 +23,7 @@ class _SearchPlantsPageState extends State<SearchPlantsPage> {
 
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 
@@ -38,9 +34,9 @@ class _SearchPlantsPageState extends State<SearchPlantsPage> {
       _showErrorSnackBar('O campo de busca não pode estar vazio.');
       return;
     }
-    
-    // esconde o teclado 
-    FocusScope.of(context).unfocus(); 
+
+    // esconde o teclado
+    FocusScope.of(context).unfocus();
 
     setState(() {
       _plantsFuture = _apiService.searchPlants(query);
@@ -63,11 +59,12 @@ class _SearchPlantsPageState extends State<SearchPlantsPage> {
       itemCount: plants.length,
       itemBuilder: (context, index) {
         final plant = plants[index] as Map<String, dynamic>;
-        
+
         // Extrai os campos, usando '??' para garantir um valor padrão se for nulo
         final commonName = plant['common_name'] ?? 'Sem Nome Comum';
-        final scientificName = plant['scientific_name'] ?? 'Nome Científico Desconhecido';
-        
+        final scientificName =
+            plant['scientific_name'] ?? 'Nome Científico Desconhecido';
+
         return Card(
           color: Colors.grey.shade900,
           margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
@@ -80,14 +77,20 @@ class _SearchPlantsPageState extends State<SearchPlantsPage> {
                     height: 50,
                     fit: BoxFit.cover,
                     // Garante que o widget não quebre se a URL da imagem falhar
-                    errorBuilder: (context, error, stackTrace) => 
-                      const Icon(Icons.grass, color: Colors.greenAccent, size: 30),
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.grass,
+                      color: Colors.greenAccent,
+                      size: 30,
+                    ),
                   )
                 : const Icon(Icons.grass, color: Colors.greenAccent, size: 30),
-            
+
             title: Text(
               commonName,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             subtitle: Text(
               'Científico: $scientificName',
@@ -99,7 +102,7 @@ class _SearchPlantsPageState extends State<SearchPlantsPage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => PlantDetailsPage(
-                    plantId: plant['id'],  // <-- ID CORRETO
+                    plantId: plant['id'], // <-- ID CORRETO
                   ),
                 ),
               );
@@ -115,10 +118,28 @@ class _SearchPlantsPageState extends State<SearchPlantsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Busca de Plantas', style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Busca de Plantas',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.black,
-        iconTheme: const IconThemeData(color: Colors.white), 
+        iconTheme: const IconThemeData(color: Colors.white),
+
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(9), // 1px da linha + 8px do espaço
+          child: Column(
+            children: [
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: Color.fromARGB(174, 105, 240, 175),
+              ),
+              SizedBox(height: 8), // espaço EMBAIXO da linha
+            ],
+          ),
+        ),
       ),
+
       backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -153,7 +174,7 @@ class _SearchPlantsPageState extends State<SearchPlantsPage> {
               ),
             ),
             const SizedBox(height: 30),
-            
+
             // 4. FutureBuilder para gerenciar estados
             Expanded(
               child: FutureBuilder<Map<String, dynamic>>(
@@ -167,9 +188,12 @@ class _SearchPlantsPageState extends State<SearchPlantsPage> {
                         style: TextStyle(color: Colors.white70, fontSize: 18),
                       ),
                     );
-                  } else if (snapshot.connectionState == ConnectionState.waiting) {
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
                     return const Center(
-                      child: CircularProgressIndicator(color: Colors.greenAccent),
+                      child: CircularProgressIndicator(
+                        color: Colors.greenAccent,
+                      ),
                     );
                   } else if (snapshot.hasError) {
                     // Trata as exceções personalizadas (ApiException)
@@ -186,7 +210,10 @@ class _SearchPlantsPageState extends State<SearchPlantsPage> {
                           Text(
                             errorMessage,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(color: Colors.red, fontSize: 18),
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 18,
+                            ),
                           ),
                         ],
                       ),

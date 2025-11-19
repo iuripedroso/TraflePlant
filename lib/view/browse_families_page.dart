@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:apkinvertexto/service/trefle_service.dart';
 import 'package:apkinvertexto/view/family_plants_page.dart';
 
-
 class BrowseFamiliesPage extends StatefulWidget {
   const BrowseFamiliesPage({super.key});
 
@@ -11,7 +10,7 @@ class BrowseFamiliesPage extends StatefulWidget {
 }
 
 class _BrowseFamiliesPageState extends State<BrowseFamiliesPage> {
-  final _apiService = TrefleService(); 
+  final _apiService = TrefleService();
   Future<Map<String, dynamic>>? _familiesFuture;
   int _currentPage = 1;
   bool _canLoadMore = true;
@@ -30,15 +29,14 @@ class _BrowseFamiliesPageState extends State<BrowseFamiliesPage> {
       _familiesFuture = _apiService.fetchFamilies(page: _currentPage);
     });
 
-    _familiesFuture! 
+    _familiesFuture!
         .then((data) {
           final List<dynamic> newFamilies = data['data'] ?? [];
           final dynamic links = data['links'] ?? {};
 
           setState(() {
             _allFamilies.addAll(newFamilies);
-            _canLoadMore =
-                links['next'] != null; // Verifica se há uma próxima página
+            _canLoadMore = links['next'] != null;
             _currentPage++;
           });
         })
@@ -59,15 +57,68 @@ class _BrowseFamiliesPageState extends State<BrowseFamiliesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Explorar Famílias',
-          style: TextStyle(color: Colors.white),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: AppBar(
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF0D0D0D), Color(0xFF1A1A1A)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+
+          // 🚫 Removido o quadrado verde → Agora só a seta branca
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.forest,
+                  color: Colors.greenAccent,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Famílias de Plantas',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+
+          bottom: const PreferredSize(
+            preferredSize: Size.fromHeight(1),
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: Color.fromARGB(134, 105, 240, 175),
+            ),
+          ),
         ),
-        backgroundColor: Colors.black,
-        iconTheme: const IconThemeData(color: Colors.white),
       ),
+
       backgroundColor: Colors.black,
+
       body: FutureBuilder<Map<String, dynamic>>(
         future: _familiesFuture,
         builder: (context, snapshot) {
@@ -85,14 +136,12 @@ class _BrowseFamiliesPageState extends State<BrowseFamiliesPage> {
               ),
             );
           } else {
-            // Se houver dados (ou se já tivermos dados em _allFamilies)
             return ListView.builder(
+              padding: const EdgeInsets.only(top: 12),
               itemCount: _allFamilies.length + (_canLoadMore ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index == _allFamilies.length) {
-                  // Último item: indicador de carregamento (ou "sem mais")
                   if (_canLoadMore) {
-                    // evita o erro "setState() or markNeedsBuild() called during build..."
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       _loadFamilies();
                     });
@@ -106,7 +155,7 @@ class _BrowseFamiliesPageState extends State<BrowseFamiliesPage> {
                       ),
                     );
                   } else {
-                    return const SizedBox.shrink();
+                    return const SizedBox(height: 40);
                   }
                 }
 
