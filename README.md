@@ -36,7 +36,7 @@
                             <span class="scientific-name">Científico: Rosa canina</span>
                         </div>
                     </li>
-                    </ul>
+                </ul>
 
             </div>
         </main>
