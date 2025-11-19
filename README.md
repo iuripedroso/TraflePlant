@@ -1,16 +1,45 @@
-# apkinvertexto
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de Plantas</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <i class="fas fa-arrow-left header-icon"></i>
+            <h1>Busca de Plantas</h1>
+        </header>
 
-A new Flutter project.
+        <main class="content-body">
+            
+            <div class="search-input-group">
+                <input type="text" id="search-query" placeholder="Nome da Planta (ex: Rose, Oak)">
+            </div>
+            
+            <button class="search-button">
+                <i class="fas fa-search"></i>
+                Buscar Planta
+            </button>
 
-## Getting Started
+            <div id="results-area" class="results-container">
+                <p class="initial-message">Digite o nome de uma planta para começar a busca.</p>
 
-This project is a starting point for a Flutter application.
+                <ul class="plant-list">
+                    <li class="plant-item">
+                        <img src="url_da_imagem.jpg" alt="Imagem da Planta" class="plant-image">
+                        <div class="plant-info">
+                            <span class="common-name">Nome Comum (Ex: Rosa)</span>
+                            <span class="scientific-name">Científico: Rosa canina</span>
+                        </div>
+                    </li>
+                    </ul>
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+            </div>
+        </main>
+    </div>
+</body>
+</html>
