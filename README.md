@@ -51,13 +51,9 @@ A busca é realizada consumindo a **API do Trefle**, que retorna dados botânico
   - Mensagens caso a API não retorne resultados.  
   - Loading para melhorar a UX enquanto a requisição é feita.
 
----
-
 ## ▶️ Como Rodar o Projeto
 
 Aqui está o passo a passo completo para rodar o app Flutter localmente.
-
----
 
 ## 1️⃣ Instale os pré-requisitos
 
@@ -72,3 +68,4 @@ Verifique se está tudo certo:
 
 ```bash
 flutter doctor
+
