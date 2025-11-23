@@ -51,3 +51,24 @@ A busca é realizada consumindo a **API do Trefle**, que retorna dados botânico
   - Mensagens caso a API não retorne resultados.  
   - Loading para melhorar a UX enquanto a requisição é feita.
 
+---
+
+## ▶️ Como Rodar o Projeto
+
+Aqui está o passo a passo completo para rodar o app Flutter localmente.
+
+---
+
+## 1️⃣ Instale os pré-requisitos
+
+Antes de tudo, você precisa ter instalado:
+
+- **Flutter SDK**  
+- **Dart SDK** (já incluído no Flutter)  
+- **Android Studio** ou **VS Code** com plugin Flutter  
+- Um **emulador Android** configurado ou um **celular físico via USB**
+
+Verifique se está tudo certo:
+
+```bash
+flutter doctor
