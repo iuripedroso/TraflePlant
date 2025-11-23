@@ -18,8 +18,7 @@ A página contém:
   <img src="https://raw.githubusercontent.com/iuripedroso/TraflePlant/refs/heads/main/trefle%2001.jfif" width="180">
   <img src="https://raw.githubusercontent.com/iuripedroso/TraflePlant/refs/heads/main/treflle%2002.jfif" width="180">
   <img src="https://raw.githubusercontent.com/iuripedroso/TraflePlant/refs/heads/main/trefle%2003.jfif" width="180">
-  <img src="https://raw.githubusercontent.com/iuripedroso/TraflePlant/refs/heads/main/trefle%2004.jfif" width="180">
-  <img src="https://raw.githubusercontent.com/iuripedroso/TraflePlant/refs/heads/main/trefle%2005.jfif" width="180">
+  <img src="https://raw.githubusercontent.com/iuripedroso/TraflePlant/refs/heads/main/trefle%2004.jfif" width="180"> 
 </div>
 
 ## 🛠️ Detalhes da Implementação (Dart + Flutter + API Trefle)
