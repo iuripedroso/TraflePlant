@@ -51,4 +51,3 @@ A busca é realizada consumindo a **API do Trefle**, que retorna dados botânico
   - Mensagens caso a API não retorne resultados.  
   - Loading para melhorar a UX enquanto a requisição é feita.
 
-Se quiser, posso adicionar trechos de código reais (service, model, widget da busca, página de detalhes) no README.
