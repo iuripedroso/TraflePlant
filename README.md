@@ -27,7 +27,7 @@ A página contém:
 A aplicação foi desenvolvida em **Flutter**, utilizando widgets como `Scaffold`, `AppBar`, `TextField`, `ListView.builder` e navegação com `Navigator.push`.  
 A busca é realizada consumindo a **API do Trefle**, que retorna dados botânicos como nome científico, imagens e família.
 
-### 🔧 Principais pontos da implementação
+### Principais pontos da implementação
 
 - **Service em Dart (`trefle_service.dart`)**  
   - Utiliza `http` para fazer requisições GET.  
