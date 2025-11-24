@@ -113,7 +113,6 @@ class _PlantDetailsPageState extends State<PlantDetailsPage> {
         SliverToBoxAdapter(
           child: Stack(
             children: [
-              // Imagem de fundo
               if (imageUrl != null)
                 Container(
                   height: 350,

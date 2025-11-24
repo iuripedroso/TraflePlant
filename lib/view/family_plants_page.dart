@@ -13,28 +13,39 @@ class FamilyPlantsPage extends StatefulWidget {
 
 class _FamilyPlantsPageState extends State<FamilyPlantsPage> {
   final _apiService = TrefleService();
-  Future<Map<String, dynamic>>? _plantsFuture;
+  final ScrollController _scrollController = ScrollController();
   int _currentPage = 1;
   List<dynamic> _allPlants = [];
   bool _canLoadMore = true;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _loadPlants();
+    _scrollController.addListener(_onScroll);
   }
 
-  void _loadPlants() {
-    if (!_canLoadMore) return;
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      if (_canLoadMore && !_isLoading) {
+        _loadPlants();
+      }
+    }
+  }
 
-    setState(() {
-      _plantsFuture = _apiService.fetchPlantsByFamily(
+  Future<void> _loadPlants() async {
+    if (!_canLoadMore || _isLoading) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final data = await _apiService.fetchPlantsByFamily(
         widget.familyName,
         page: _currentPage,
       );
-    });
 
-    _plantsFuture!.then((data) {
       final List<dynamic> newPlants = data['data'] ?? [];
       final dynamic links = data['links'] ?? {};
 
@@ -42,9 +53,11 @@ class _FamilyPlantsPageState extends State<FamilyPlantsPage> {
         _allPlants.addAll(newPlants);
         _canLoadMore = links['next'] != null;
         _currentPage++;
+        _isLoading = false;
       });
-    }).catchError((e) {
-      if (_currentPage > 1) {
+    } catch (e) {
+      setState(() => _isLoading = false);
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Erro ao carregar mais plantas: ${e.toString()}'),
@@ -52,80 +65,13 @@ class _FamilyPlantsPageState extends State<FamilyPlantsPage> {
           ),
         );
       }
-    });
+    }
   }
 
-  Widget _buildPlantList() {
-    if (_allPlants.isEmpty) {
-      return const Center(
-        child: Text(
-          'Nenhuma planta encontrada nesta família.',
-          style: TextStyle(color: Colors.white, fontSize: 18),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      itemCount: _allPlants.length + (_canLoadMore ? 1 : 0),
-      itemBuilder: (context, index) {
-        if (index == _allPlants.length) {
-          if (_canLoadMore) {
-            _loadPlants();
-            return const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Center(
-                child: CircularProgressIndicator(color: Colors.greenAccent),
-              ),
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
-        }
-
-        final plant = _allPlants[index] as Map<String, dynamic>;
-        final commonName = plant['common_name'] ?? 'Sem Nome Comum';
-        final scientificName =
-            plant['scientific_name'] ?? 'Nome Científico Desconhecido';
-
-        return Card(
-          color: Colors.grey.shade900,
-          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-          child: ListTile(
-            leading: plant['image_url'] != null
-                ? Image.network(
-                    plant['image_url'],
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const Icon(Icons.grass,
-                            color: Colors.greenAccent, size: 30),
-                  )
-                : const Icon(Icons.grass,
-                    color: Colors.greenAccent, size: 30),
-            title: Text(
-              commonName,
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-              'Científico: $scientificName',
-              style: const TextStyle(color: Colors.white70),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PlantDetailsPage(
-                    plantId: plant['id'],
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -137,7 +83,6 @@ class _FamilyPlantsPageState extends State<FamilyPlantsPage> {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
-
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -147,12 +92,10 @@ class _FamilyPlantsPageState extends State<FamilyPlantsPage> {
               ),
             ),
           ),
-
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pop(context),
           ),
-
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -179,7 +122,6 @@ class _FamilyPlantsPageState extends State<FamilyPlantsPage> {
               ),
             ],
           ),
-
           bottom: const PreferredSize(
             preferredSize: Size.fromHeight(1),
             child: Divider(
@@ -190,33 +132,79 @@ class _FamilyPlantsPageState extends State<FamilyPlantsPage> {
           ),
         ),
       ),
-
       backgroundColor: Colors.black,
-
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: _plantsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting &&
-              _allPlants.isEmpty) {
-            return const Center(
+      body: _allPlants.isEmpty && _isLoading
+          ? const Center(
               child: CircularProgressIndicator(color: Colors.greenAccent),
-            );
-          } else if (snapshot.hasError && _allPlants.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  'Erro ao carregar lista: ${snapshot.error}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.red, fontSize: 18),
+            )
+          : _allPlants.isEmpty
+              ? const Center(
+                  child: Text(
+                    'Nenhuma planta encontrada nesta família.',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                )
+              : ListView.builder(
+                  controller: _scrollController,
+                  itemCount: _allPlants.length + (_isLoading ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == _allPlants.length) {
+                      return const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.greenAccent,
+                          ),
+                        ),
+                      );
+                    }
+
+                    final plant = _allPlants[index] as Map<String, dynamic>;
+                    final commonName = plant['common_name'] ?? 'Sem Nome Comum';
+                    final scientificName = plant['scientific_name'] ??
+                        'Nome Científico Desconhecido';
+
+                    return Card(
+                      color: Colors.grey.shade900,
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 4.0),
+                      child: ListTile(
+                        leading: plant['image_url'] != null
+                            ? Image.network(
+                                plant['image_url'],
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(Icons.grass,
+                                        color: Colors.greenAccent, size: 30),
+                              )
+                            : const Icon(Icons.grass,
+                                color: Colors.greenAccent, size: 30),
+                        title: Text(
+                          commonName,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          'Científico: $scientificName',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PlantDetailsPage(
+                                plantId: plant['id'],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
-              ),
-            );
-          } else {
-            return _buildPlantList();
-          }
-        },
-      ),
     );
   }
 }

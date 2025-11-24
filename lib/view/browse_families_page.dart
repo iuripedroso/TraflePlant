@@ -73,7 +73,7 @@ class _BrowseFamiliesPageState extends State<BrowseFamiliesPage> {
             ),
           ),
 
-          // 🚫 Removido o quadrado verde → Agora só a seta branca
+
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.pop(context),
